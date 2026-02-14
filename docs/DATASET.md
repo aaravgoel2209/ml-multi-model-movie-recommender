@@ -8,7 +8,7 @@ This project uses two primary datasets to support a multi-model movie recommenda
 2. **Massive Rotten Tomatoes Dataset (Kaggle)** — Movie metadata and critic reviews used for content-based and review-based modeling.
 
 The `raw/` directory contains original downloaded data files.  
-The `cleaned/` directory contains processed datasets used for modeling and experimentation.
+The `processed/` directory contains processed datasets used for modeling and experimentation.
 
 Raw datasets are excluded from version control due to size limitations. They must be downloaded separately from their official sources.
 
