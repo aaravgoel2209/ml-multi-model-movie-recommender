@@ -12,7 +12,7 @@ Finding your next favorite movie is hard. We make it easy.
 
 1. 🎬 You pick 3 movies you already like (or pick from trending suggestions if you're new)
 2. 🤖 Our AI analyzes them (looking at plot, genre, keywords, reviews)
-3. 🍿 We give you 5 perfect recommendations ranked just for you
+3. 🍿 We give you 3 perfect recommendations ranked just for you
 
 **What makes it cool:**  
 It uses multiple "mini-AIs" (like Lego blocks) each looking at different things—one reads synopses, another looks at keywords, another checks reviews. Then a final ranking model combines everything.
@@ -28,7 +28,7 @@ https://github.com/aaravgoel2209/ml-multi-model-movie-recommender
 Finding a good movie to watch takes too long. Users scroll endlessly through streaming platforms without making a choice.
 
 **Solution:**  
-MMMR (Multi-Model Movie Recommender) takes 3 movies a user loves and uses multiple AI models to analyze their plot, genre, and keywords, then returns 5 highly personalized recommendations.
+MMMR (Multi-Model Movie Recommender) takes 3 movies a user loves and uses multiple AI models to analyze their plot, genre, and keywords, then returns 3 highly personalized recommendations.
 
 **Vision:**  
 Build a modular, Lego-like AI system where different models handle different aspects of movie understanding, all working together to make perfect suggestions. The system should still function even if some models are disabled.
@@ -49,7 +49,7 @@ Build a modular, Lego-like AI system where different models handle different asp
 
 - Web interface for selecting movies
 - Search and trending movie grid
-- AI that processes 3 or fewer input movies and returns at least 5 recommendations
+- AI that processes 3 or fewer input movies and returns at least 3 recommendations
 - Basic explanation for each recommendation
 - Clickable cards with detailed movie view
 - No login or user accounts required
@@ -83,7 +83,7 @@ Build a modular, Lego-like AI system where different models handle different asp
 
 ## FR-3: Recommendations
 
-- **FR-3.1:** System displays 5 movie recommendations as cards
+- **FR-3.1:** System displays 3 movie recommendations as cards
 - **FR-3.2:** Each recommendation shows:
   - Poster
   - Title
@@ -97,7 +97,7 @@ Build a modular, Lego-like AI system where different models handle different asp
 - **FR-4.2:** System fetches synopsis, genre, keywords for each
 - **FR-4.3:** Multiple models analyze different aspects
 - **FR-4.4:** Final ranking model combines scores
-- **FR-4.5:** Returns top 5 results
+- **FR-4.5:** Returns top 3 results
 
 ## FR-5: Data Management
 
