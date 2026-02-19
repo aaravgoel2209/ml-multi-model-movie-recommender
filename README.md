@@ -10,7 +10,7 @@ Finding your next favorite movie is hard. We make it easy.
 
 **How it works (3 steps):**
 
-1. 🎬 You pick 3 movies you already like (or pick from trending suggestions if you're new)
+1. 🎬 You pick 3 movies you already like and 3 you dislike (or pick from trending suggestions if you're new)
 2. 🤖 Our AI analyzes them (looking at plot, genre, keywords, reviews)
 3. 🍿 We give you 5 perfect recommendations ranked just for you
 
@@ -28,7 +28,7 @@ https://github.com/aaravgoel2209/ml-multi-model-movie-recommender
 Finding a good movie to watch takes too long. Users scroll endlessly through streaming platforms without making a choice.
 
 **Solution:**  
-MMMR (Multi-Model Movie Recommender) takes 3 movies a user loves and uses multiple AI models to analyze their plot, genre, and keywords, then returns 5 highly personalized recommendations.
+MMMR (Multi-Model Movie Recommender) takes 3 movies a user loves, 3 movies user hates and uses multiple AI models to analyze their plot, genre, and keywords, then returns 5 highly personalized recommendations.
 
 **Vision:**  
 Build a modular, Lego-like AI system where different models handle different aspects of movie understanding, all working together to make perfect suggestions. The system should still function even if some models are disabled.
@@ -49,7 +49,7 @@ Build a modular, Lego-like AI system where different models handle different asp
 
 - Web interface for selecting movies
 - Search and trending movie grid
-- AI that processes 3 or fewer input movies and returns at least 5 recommendations
+- AI that processes 6 or more/fewer input movies and returns at least 5 recommendations
 - Basic explanation for each recommendation
 - Clickable cards with detailed movie view
 - No login or user accounts required
@@ -71,9 +71,9 @@ Build a modular, Lego-like AI system where different models handle different asp
 
 - **FR-1.1:** User can search for movies by title
 - **FR-1.2:** User can browse a grid of trending/popular movies
-- **FR-1.3:** User can select up to 3 movies
+- **FR-1.3:** User can select up to 6 movies
 - **FR-1.4:** Selected movies appear as visual chips with remove option
-- **FR-1.5:** "Get Recommendations" button enables ONLY when 3 movies are selected
+- **FR-1.5:** "Get Recommendations" button enables ONLY when 6 movies are selected (3 liked/3 disliked)
 
 ## FR-2: Movie Display
 
@@ -93,7 +93,7 @@ Build a modular, Lego-like AI system where different models handle different asp
 
 ## FR-4: AI Processing
 
-- **FR-4.1:** Backend receives 3 movie IDs
+- **FR-4.1:** Backend receives 6 movie IDs
 - **FR-4.2:** System fetches synopsis, genre, keywords for each
 - **FR-4.3:** Multiple models analyze different aspects
 - **FR-4.4:** Final ranking model combines scores
