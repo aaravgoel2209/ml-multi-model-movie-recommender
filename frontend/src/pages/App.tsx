@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Nav } from '../components/Nav';
 import HomePage from './home/HomePage';
 import RecommendPage from './recommend/RecommendPage';
+import MoviePage from './movie/MoviePage';
 import Loading from '../components/Loading';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage onMagicTrick={handleMagicTrick} />} />
           <Route path="/recommend" element={<RecommendPage onEnter={handleNavigateComplete} />} />
+          <Route path="/movie/:id" element={<MoviePage onEnter={handleNavigateComplete} />} />
         </Routes>
       </div>
       

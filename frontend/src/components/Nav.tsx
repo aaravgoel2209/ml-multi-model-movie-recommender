@@ -116,7 +116,7 @@ export const Nav: React.FC = () => {
                                 >
                                     {movie ? (
                                         <div className="movie-item">
-                                            <span className="movie-title">{movie.title}</span>
+                                            <p className="title">{movie.title}</p>
                                             <button
                                                 className="remove-btn"
                                                 onClick={() => removeMovie(index, 'favorite')}
@@ -144,7 +144,7 @@ export const Nav: React.FC = () => {
                                 >
                                     {movie ? (
                                         <div className="movie-item">
-                                            <span className="movie-title">{movie.title}</span>
+                                            <p className="title">{movie.title}</p>
                                             <button
                                                 className="remove-btn"
                                                 onClick={() => removeMovie(index, 'disliked')}

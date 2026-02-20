@@ -108,6 +108,8 @@
     cursor: pointer;
 }
 
+
+
 .movie-drop-zone.drag-over {
     border-color: #dedede;
     background-color: #d8d8d8;
@@ -116,7 +118,7 @@
 
 .placeholder {
     color: #bebebe;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .movie-item {
@@ -127,12 +129,14 @@
     gap: 8px;
 }
 
-.movie-title {
+.title {
     flex: 1;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: bold;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: #dadada;
 }
 
 .remove-btn {
