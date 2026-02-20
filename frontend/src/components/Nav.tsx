@@ -87,6 +87,34 @@ export const Nav: React.FC = () => {
                                 </div>
                             ))}
                         </div>
+                        <br />
+                        <h3 className="nav-subtitle">Insert 3 movies you dislike</h3>
+                        <div className="movies-input-container">
+                            {movies.map((movie, index) => (
+                                <div
+                                    key={index}
+                                    className={`movie-drop-zone ${dragOverIndex === index ? 'drag-over' : ''}`}
+                                    onDragOver={(e) => handleDragOver(e, index)}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => handleDrop(e, index)}
+                                >
+                                    {movie ? (
+                                        <div className="movie-item">
+                                            <span className="movie-title">{movie.title}</span>
+                                            <button
+                                                className="remove-btn"
+                                                onClick={() => removeMovie(index)}
+                                                aria-label="Remove movie"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <span className="placeholder">Drop movie here</span>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
                 
