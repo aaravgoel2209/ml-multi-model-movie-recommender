@@ -5,6 +5,7 @@
   --light: hsl(var(--color_value), var(--saturation_level), 40.39%);
   --dark: hsl(var(--color_value), var(--saturation_level), 10.2%);
 
+  --nav-width: 500px;
 
   font-family: "Noto Sans", sans-serif;
   font-optical-sizing: auto;
@@ -37,6 +38,14 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+.App {
+  display: grid;
+  grid-template-columns: var(--nav-width) 1fr;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 
 h1 {
