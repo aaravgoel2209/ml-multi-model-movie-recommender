@@ -1,6 +1,20 @@
 import { useState, useEffect } from 'react';
+import HomeButton from '../../components/HomeButton';
+import Card from '../../components/Card';
 
-function RecommendPage() {
+interface RecommendPageProps {
+  onEnter?: () => void;
+}
+
+const RECOMMENDED_MOVIES = [
+  { id: 'rec-1', title: 'Recommended Movie 1', description: 'This is a recommended movie based on your preferences.' },
+  { id: 'rec-2', title: 'Recommended Movie 2', description: 'This is a recommended movie based on your preferences.' },
+  { id: 'rec-3', title: 'Recommended Movie 3', description: 'This is a recommended movie based on your preferences.' },
+  { id: 'rec-4', title: 'Recommended Movie 4', description: 'This is a recommended movie based on your preferences.' },
+  { id: 'rec-5', title: 'Recommended Movie 5', description: 'This is a recommended movie based on your preferences.' },
+];
+
+function RecommendPage({ onEnter }: RecommendPageProps) {
   const [colorValue, setColorValue] = useState(360);
   const saturation = colorValue === 360 ? 0 : 50;
 
@@ -9,35 +23,44 @@ function RecommendPage() {
     document.documentElement.style.setProperty('--saturation_level', `${saturation}%`);
   }, [colorValue, saturation]);
 
+  const handleDragStart = () => {
+    // Handle drag start if needed
+  };
+
+  useEffect(() => {
+    onEnter?.();
+  }, [onEnter]);
+
   return (
-    <div className="App">
-        <section>
-          <div id="search">
-            <h1>Search Movies</h1>
-            <input type="text" placeholder="Type a title..." />
-            <div>
-              <button>Magic Trick</button>
-              <input type="range" min="0" max="360" value={colorValue} onChange={(e) => setColorValue(parseInt(e.target.value))}/>
-            </div>
-          </div>
-          <div>
-            <ul className='cards'>
-              <li className='card'>
-                <h2>Movie Title</h2>
-                <p>Movie description goes here. It can be a brief summary of the plot, the genre, or any other relevant information about the movie.</p>
-              </li>
-              <li className='card'>
-                <h2>Movie Title</h2>
-                <p>Movie description goes here. It can be a brief summary of the plot, the genre, or any other relevant information about the movie.</p>
-              </li>
-              <li className='card'>
-                <h2>Movie Title</h2>
-                <p>Movie description goes here. It can be a brief summary of the plot, the genre, or any other relevant information about the movie.</p>
-              </li>
-            </ul>
-          </div>
-        </section>
-    </div>
+    <>
+      <HomeButton />
+      <section>
+        <div className="recommend-header">
+          <h1>Recommendations</h1>
+          <input 
+            type="range" 
+            min="0" 
+            max="360" 
+            value={colorValue} 
+            onChange={(e) => setColorValue(parseInt(e.target.value))}
+            className="color-range"
+          />
+        </div>
+        <div>
+          <ul className='cards'>
+            {RECOMMENDED_MOVIES.map((movie) => (
+              <Card
+                key={movie.id}
+                id={movie.id}
+                title={movie.title}
+                description={movie.description}
+                onDragStart={handleDragStart}
+              />
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
   )
 }
 

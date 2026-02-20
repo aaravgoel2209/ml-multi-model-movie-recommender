@@ -26,6 +26,39 @@
     transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.navbar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+}
+
+.restart-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    color: #d1d5db;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.restart-btn:hover {
+    color: #fff;
+    border-color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: rotate(180deg);
+}
+
+.restart-btn:active {
+    transform: rotate(180deg) scale(0.95);
+}
+
 .navbar.closed .navbar-title {
     opacity: 0.4;
 }
