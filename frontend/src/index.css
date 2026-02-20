@@ -5,7 +5,7 @@
   --light: hsl(var(--color_value), var(--saturation_level), 40.39%);
   --dark: hsl(var(--color_value), var(--saturation_level), 10.2%);
 
-  --nav-width: 500px;
+  --nav-width: 350px;
 
   font-family: "Noto Sans", sans-serif;
   font-optical-sizing: auto;
@@ -32,20 +32,18 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  justify-content: center;
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
 .App {
-  display: grid;
-  grid-template-columns: var(--nav-width) 1fr;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  padding-left: calc(var(--nav-width) + 50px);
+  transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 100vh;
+  width: calc(100% - var(--nav-width) - 50px);
 }
 
 h1 {

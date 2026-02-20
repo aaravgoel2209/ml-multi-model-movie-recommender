@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import './App.css'
-import { Nav } from './Nav';
 
-function App() {
+function RecommendPage() {
   const [colorValue, setColorValue] = useState(360);
   const saturation = colorValue === 360 ? 0 : 50;
 
@@ -13,7 +11,6 @@ function App() {
 
   return (
     <div className="App">
-      <Nav />
         <section>
           <div id="search">
             <h1>Search Movies</h1>
@@ -44,4 +41,4 @@ function App() {
   )
 }
 
-export default App
+export default RecommendPage
