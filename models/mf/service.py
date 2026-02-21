@@ -6,6 +6,7 @@ High-level idea
 learn low-dimensional embeddings for users and movies such that the dot product
 (user_vec · movie_vec) approximates the observed rating. Optional bias terms per user and movie improve accuracy.
 
+
 Assumptions / Notes
 -------------------
 - Recommendations only consider movies seen in training.
@@ -15,13 +16,18 @@ Assumptions / Notes
 ------------
 """
 from dataclasses import dataclass
-from typing import Optional, Union, Dict, List, Tuple
+from pathlib import Path
+from typing import Optional, Union, Dict, List
 
 import numpy as np
 import pandas as pd
 from torch import nn
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
+
+from models.mf.data import RatingsDataset
+from models.mf.model import MFModel
+
 
 @dataclass
 class TrainStats:
@@ -30,73 +36,6 @@ class TrainStats:
     val_loss: Optional[float] = None
 
 
-class RatingsDataset(Dataset):
-    """PyTorch Dataset for (user_idx, item_idx, rating) triples."""
-    def __init__(self, user_indices: np.ndarray, item_indices: np.ndarray, ratings: np.ndarray):
-        self.user_indices = torch.as_tensor(user_indices, dtype=torch.long)
-        self.item_indices = torch.as_tensor(item_indices, dtype=torch.long)
-        self.ratings = torch.as_tensor(ratings, dtype=torch.float32)
-
-    def __len__(self) -> int:
-        return int(self.ratings.shape[0])
-
-    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        return self.user_indices[idx], self.item_indices[idx], self.ratings[idx]
-
-class MFModel(nn.Module):
-    """
-    Basic Matrix Factorization model with optional bias terms.
-
-    pred(u,i) = dot(U[u], V[i]) + bu[u] + bi[i] + global_bias
-    -->the predicted rating for user u and item i is the dot product of their latent vectors
-    """
-
-    def __init__(self, num_users: int, num_items: int, latent_dim: int, use_bias: bool = True):
-        super().__init__()
-        self.use_bias = bool(use_bias)
-
-        self.user_emb = nn.Embedding(num_users, latent_dim)
-        self.item_emb = nn.Embedding(num_items, latent_dim)
-
-        if self.use_bias:
-            self.user_bias = nn.Embedding(num_users, 1)
-            self.item_bias = nn.Embedding(num_items, 1)
-            self.global_bias = nn.Parameter(torch.zeros(1))
-        else:
-            self.user_bias = None
-            self.item_bias = None
-            self.global_bias = None
-
-        self._init_weights()
-
-    def _init_weights(self) -> None:
-        # Standard small init for embeddings (helps stabilize early training)
-        nn.init.normal_(self.user_emb.weight, mean=0.0, std=0.01)
-        nn.init.normal_(self.item_emb.weight, mean=0.0, std=0.01)
-        if self.use_bias:
-            nn.init.zeros_(self.user_bias.weight)
-            nn.init.zeros_(self.item_bias.weight)
-            with torch.no_grad():
-                self.global_bias.fill_(0.0)
-
-    def forward(self, user_idx: torch.Tensor, item_idx: torch.Tensor) -> torch.Tensor:
-        """
-        Args:
-            user_idx: (batch,)
-            item_idx: (batch,)
-        Returns:
-            preds: (batch,) float tensor
-        """
-        u = self.user_emb(user_idx)  # (batch, k)
-        v = self.item_emb(item_idx)  # (batch, k)
-        dot = (u * v).sum(dim=1)     # (batch,)
-
-        if self.use_bias:
-            bu = self.user_bias(user_idx).squeeze(1)  # (batch,)
-            bi = self.item_bias(item_idx).squeeze(1)  # (batch,)
-            return dot + bu + bi + self.global_bias
-        else:
-            return dot
 
 class CollaborativeModel:
     def __init__(
@@ -439,43 +378,57 @@ class CollaborativeModel:
 
 
 def _main():
+
+    # Paths (we need to make this smarter)
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+    MODEL_DIR = PROJECT_ROOT / "mf" / "mf_model.pt"
+    TRAIN_DF_DIR = PROJECT_ROOT / ".." / "data" / "processed" / "train.csv"
+    VAL_DF_DIR = PROJECT_ROOT / ".." / "data" / "processed" / "val.csv"
+    MOVIE_DATA_DIR = PROJECT_ROOT / ".." /"data" / "processed" / "items.csv"
+
+    # Load Data
+    train_df = pd.read_csv(TRAIN_DF_DIR)
+    val_df = pd.read_csv(VAL_DF_DIR)
+    movie_data = pd.read_csv(MOVIE_DATA_DIR)
+
+    # Training Config
     latent_dim = 20
     lr = 1e-3
     weight_decay = 1e-5
     epochs = 1
     use_bias = True
     batch_size = 2048
-    user = 1
     top_n = 10
-    train_df = pd.read_csv("../data/processed/train.csv")
-    val_df = pd.read_csv("../data/processed/val.csv")
-    movie_data = pd.read_csv("../data/processed/items.csv")
-   # mf = CollaborativeModel(
-   #     latent_dim=latent_dim,
-   #     lr=lr,
-   #     weight_decay=weight_decay,
-   #     use_bias=use_bias,
-   #     movie_data=movie_data
-    #)
-    #mf.fit(train_df, epochs=epochs, batch_size=batch_size, val_df=val_df, verbose=True)
-    #mf.save("mf_model.pt")
-    #print(mf.get_movie_title(0))
-    mf = CollaborativeModel.load("mf_model.pt", movie_data=movie_data)
+
+    # Create Model Service Wrapper and Train
+    mf = CollaborativeModel(
+        latent_dim=latent_dim,
+        lr=lr,
+        weight_decay=weight_decay,
+        use_bias=use_bias,
+        movie_data=movie_data)
+    mf.fit(train_df, epochs=epochs, batch_size=batch_size, val_df=val_df, verbose=True)
+
+    # Save Model
+    mf.save(str(MODEL_DIR))
+
+    # Load Model
+    mf = CollaborativeModel.load(MODEL_DIR, movie_data=movie_data)
+
+    # Ask for a recommendation
     recs = mf.recommend_from_ratings(
         ratings=[
-            (1221, 5.0),  # LOTR
-            (4306, 5.0),  # Harry Potter
-            (597, 1.0),  # Titanic
+            (4993, 5.0),  # LOTR
+            (5816, 5.0),  # Harry Potter 2
+            (1721, 1.0),  # Titanic
         ],
         top_n=10,
         return_scores = True
 
     )
-    print(f"\nTop-{top_n} recommendations for userId={user}:")
+    print(f"\nTop-{top_n} recommendations")
     for movie_id, score in recs:
         print(f" movieId={movie_id}  score={score:.3f} title={mf.get_movie_title(movie_id)}")
 
-    print(mf.get_movie_id(30))
-    print(mf.get_movie_title(357))
 if __name__ == "__main__":
     _main()
