@@ -1,0 +1,122 @@
+.movie-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid #d1d5db;
+  color: #d1d5db;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 30px;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.back-btn:hover {
+  color: #fff;
+  border-color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(-5px);
+}
+
+.back-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.movie-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.movie-header {
+  margin-bottom: 40px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 20px;
+}
+.insert-btn {
+  background-color: hsl(var(--color_value), var(--saturation_level), 50%);
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.3s;
+}
+.movie-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: #fff;
+  margin: 0 0 10px 0;
+}
+
+.movie-id {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+  font-family: monospace;
+}
+
+.movie-description,
+.movie-details {
+  margin-bottom: 40px;
+  width: 50%;
+  float: left;
+}
+
+.movie-description h2,
+.movie-details h2 {
+  font-size: 24px;
+  color: #f3f4f6;
+  margin: 0 0 15px 0;
+}
+
+.movie-description p,
+.movie-details p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #d1d5db;
+  margin: 0;
+}
+
+.ratings-container {
+  width: 40%;
+  float: right;
+  background-color: hsl(var(--color_value), var(--saturation_level), 50%);
+  padding: 25px;
+  border-radius: 25px;
+  width: 280px;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.star-row {
+  color: #ffff00;
+  font-size: 35px;
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.ratings-text {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.line {
+  border-bottom: 2px dotted #ccc;
+  margin-bottom: 12px;
+  height: 2px;
+}
