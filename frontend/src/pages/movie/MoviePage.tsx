@@ -15,6 +15,8 @@ function MoviePage({ onEnter }: MoviePageProps) {
   const state = location.state as { title?: string; description?: string } | null;
   const title = state?.title || 'Movie Title';
   const description = state?.description || 'Movie description not available.';
+  // get rating from backend, default value is 5  
+  const rating = /* state?.rating || */ 5;
 
   useEffect(() => {
     onEnter?.();
@@ -47,13 +49,33 @@ function MoviePage({ onEnter }: MoviePageProps) {
         <div className="movie-header">
           <h1 className="movie-title">{title}</h1>
           <p className="movie-id">ID: {id}</p>
+          <button className="insert-btn" >INSERT</button>
         </div>
-
         <div className="movie-description">
           <h2>Description</h2>
           <p>{description}</p>
         </div>
-
+        <div className="ratings-container">
+          <div className="star-row">
+            {[1, 2, 3, 4, 5].map((starNumber) => (
+              <span
+                key={starNumber}
+                style={{ color: starNumber <= rating ? '#ffff00' : '#4b5563' }}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+          <p className="ratings-text">Ratings:</p>
+          <div className="dotted-lines">
+            <div className="line"></div>
+            <div className="line"></div>
+            <div className="line"></div>
+            <div className="line"></div>
+            <div className="line"></div>
+            <div className="line"></div>
+          </div>
+        </div>
         <div className="movie-details">
           <h2>Details</h2>
           <p>Additional movie information will be displayed here when connected to the backend.</p>
