@@ -293,7 +293,7 @@ class CollaborativeModel:
     ):
         """
         Cold-start recommendation based on a small set of (movieId, rating) pairs.
-
+        Requires movieId to exist in items mapping!
         Args:
             ratings: List of (movieId, rating) provided by new user
             top_n: number of recommendations
