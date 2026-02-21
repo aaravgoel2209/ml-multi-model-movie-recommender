@@ -156,7 +156,7 @@ recs = model.recommend_from_ratings(
 )
 
 for movie_id, score in recs:
-    print(movie_id, model.get_movie_title(movie_id))
+    print(movie_id, model.get_movie_title(movie_id), score)
 ```
 
 ### What Happens Internally
