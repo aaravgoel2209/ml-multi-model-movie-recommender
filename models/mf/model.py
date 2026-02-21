@@ -1,3 +1,6 @@
+"""
+Basic Matrix Factorization model with optional bias terms.
+"""
 import torch
 from torch import nn
 

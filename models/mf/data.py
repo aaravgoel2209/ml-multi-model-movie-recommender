@@ -1,3 +1,6 @@
+"""
+Simple PyTorch Dataset for (user_idx, item_idx, rating) triples.
+"""
 from typing import Tuple
 
 import numpy as np
