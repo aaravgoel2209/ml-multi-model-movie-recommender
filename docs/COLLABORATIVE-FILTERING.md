@@ -48,12 +48,14 @@ PROJECT-ROOT/
 │        data.py
 │        model.py
 │        mf_model.pt
+│        trainer.py
 │        service.py
 │
 └── README.md
 ```
 - data.py: Data loading and preprocessing utilities.
 - model.py : Actual Matrix Factorization pytorch model.
+- trainer.py : Functions for training the model.
 - service.py : Functions for generating recommendations and handling cold-start.
   - *** best entry point for external use (e.g., API calls) ***
 - mf_model.pt : Example of a saved trained model.
@@ -61,7 +63,7 @@ PROJECT-ROOT/
 
 ## Data Requirements
 
-### Training Data (`train.csv`, `val.csv`)
+### Training Data (`mf_train.csv`, `mf_val.csv`)
 
 Expected columns:
 
@@ -75,7 +77,7 @@ These indices must be contiguous integers starting from 0 (required for embeddin
 
 ---
 
-### Movie Metadata (`items.csv`)
+### Movie Metadata (`mf_items.csv`)
 
 Expected columns:
 
@@ -112,9 +114,9 @@ pip install torch pandas numpy
 import pandas as pd
 from models.collaborative_model import CollaborativeModel
 
-train_df = pd.read_csv("data/processed/train.csv")
-val_df = pd.read_csv("data/processed/val.csv")
-items_df = pd.read_csv("data/processed/items.csv")
+train_df = pd.read_csv("data/processed/mf_train.csv")
+val_df = pd.read_csv("data/processed/mf_val.csv")
+items_df = pd.read_csv("data/processed/mf_items.csv")
 
 model = CollaborativeModel(
     latent_dim=20,
@@ -124,7 +126,7 @@ model = CollaborativeModel(
 )
 
 model.fit(train_df, epochs=10, batch_size=2048, val_df=val_df)
-model.save("mf_model.pt")
+model.save("mf_model_small.pt")
 ```
 
 ---
@@ -133,7 +135,7 @@ model.save("mf_model.pt")
 
 ```python
 model = CollaborativeModel.load(
-    "mf_model.pt",
+    "mf_model_small.pt",
     movie_data=items_df
 )
 ```
