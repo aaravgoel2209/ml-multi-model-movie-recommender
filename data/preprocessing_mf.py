@@ -10,11 +10,12 @@ What this script does
    - keep only top-K most-rated movies
    - optional random sampling
 3) Re-indexes:
-   - userId -> user_idx (contiguous, int32)  [NOT saved, because you don't care about original user IDs]
-   - movieId -> item_idx (contiguous, int32) [SAVED, because you need to map embeddings back to movies]
+   - userId -> user_idx (contiguous, int32)  [NOT saved]
+   - movieId -> item_idx (contiguous, int32) [SAVED, because we  need to map embeddings back to movies]
 4) Builds a per-user holdout split (last rating by timestamp by default):
-   - train.parquet
-   - val.parquet
+   - train.csv
+   - val.csv
+   - items.csv (mapping item_idx -> movieId, title, genres)
 5) Saves a small movie mapping file:
    - items.parquet: item_idx, movieId (and optionally title/genres from movies.csv)
 
@@ -60,7 +61,6 @@ def filter_ratings(
 ) -> pd.DataFrame:
     """
     Reduce dataset size while preserving useful structure.
-    Filtering order matters: do top-k movies first, then min counts, then sampling.
     """
     out = df
 
@@ -142,20 +142,14 @@ def maybe_join_movies_metadata(items_df: pd.DataFrame, movies_path: Optional[str
     return out
 
 
-def save_parquet_or_csv(df: pd.DataFrame, path_base: str) -> str:
+def save_csv(df: pd.DataFrame, path_base: str) -> str:
     """
     Save as parquet if possible, else csv.
     Returns actual path written.
     """
-    parquet_path = path_base if path_base.endswith(".parquet") else path_base + ".parquet"
     csv_path = path_base if path_base.endswith(".csv") else path_base + ".csv"
-
-    try:
-        df.to_parquet(parquet_path, index=False)
-        return parquet_path
-    except Exception:
-        df.to_csv(csv_path, index=False)
-        return csv_path
+    df.to_csv(csv_path, index=False)
+    return csv_path
 
 
 def main():
@@ -209,11 +203,11 @@ def main():
     val_mapped = mapped_all.iloc[len(train_raw) :].reset_index(drop=True)
 
     # Save outputs
-    train_path = save_parquet_or_csv(train_mapped, os.path.join(args.outdir, "train"))
-    val_path = save_parquet_or_csv(val_mapped, os.path.join(args.outdir, "val"))
+    train_path = save_csv(train_mapped, os.path.join(args.outdir, "mf_train"))
+    val_path = save_csv(val_mapped, os.path.join(args.outdir, "mf_val"))
 
     items_df = maybe_join_movies_metadata(items_df, args.movies)
-    items_path = save_parquet_or_csv(items_df, os.path.join(args.outdir, "items"))
+    items_path = save_csv(items_df, os.path.join(args.outdir, "mf_items"))
 
     print("\nWrote:")
     print(f"  {train_path}  (columns: {list(train_mapped.columns)})")
