@@ -2,6 +2,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import './MoviePage.css';
 
+import { useMovies } from '../../context/MovieContext';
+
 interface MoviePageProps {
   onEnter?: () => void;
 }
@@ -12,11 +14,12 @@ function MoviePage({ onEnter }: MoviePageProps) {
   const location = useLocation();
 
   // Get movie data from URL state or default values
-  const state = location.state as { title?: string; description?: string } | null;
+  const state = location.state as { title?: string; description?: string; rating?: number; } | null;
+  const { addToFavorites, addToDisliked } = useMovies();
   const title = state?.title || 'Movie Title';
   const description = state?.description || 'Movie description not available.';
   // get rating from backend, default value is 5  
-  const rating = /* state?.rating || */ 5;
+  const rating = state?.rating ||  5;
 
   useEffect(() => {
     onEnter?.();
@@ -25,7 +28,24 @@ function MoviePage({ onEnter }: MoviePageProps) {
   const handleBack = () => {
     navigate(-1); // Go back to previous page
   };
-
+  const handleInsert = () => {
+    if (id) {
+      addToFavorites({
+        id: id,
+        title: title
+      });
+      // alert(`Inserted "${title}" into liked list!`);
+    }
+  };
+  const handleInsertDislike = () => {
+    if (id) {
+      addToDisliked({
+        id: id,
+        title: title
+      });
+      //alert(`Inserted "${title}" into disliked list!`);
+    }
+  };
   return (
     <div className="movie-page">
       <button className="back-btn" onClick={handleBack} aria-label="Go back">
@@ -49,7 +69,14 @@ function MoviePage({ onEnter }: MoviePageProps) {
         <div className="movie-header">
           <h1 className="movie-title">{title}</h1>
           <p className="movie-id">ID: {id}</p>
-          <button className="insert-btn" >INSERT</button>
+          <div className="movie-actions">
+            <button className="insert-btn favorite" onClick={handleInsert}>
+              I LIKE THIS FILM
+            </button>
+            <button className="insert-btn dislike" onClick={handleInsertDislike}>
+              I DISLIKE THIS FILM
+            </button>
+          </div>
         </div>
         <div className="movie-description">
           <h2>Description</h2>

@@ -4,10 +4,14 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './pages/App.tsx'
 
+import { MovieProvider } from './context/MovieContext'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <MovieProvider>
+        <App />
+      </MovieProvider>
     </BrowserRouter>
   </StrictMode>,
 )
