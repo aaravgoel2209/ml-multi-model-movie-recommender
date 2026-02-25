@@ -1,34 +1,28 @@
 """
-Preprocess MovieLens ratings for Matrix Factorization (PyTorch).
+Preprocess MovieLens ratings for Matrix Factorization.
+Main purpose:
+- get sequential idx
+- proper test/train split (on timestamp, per user)
 
-What this script does
+Steps
 ---------------------
-1) Reads ratings.csv in chunks (works with large files like ~800MB).
-2) Optionally filters to reduce size:
-   - minimum ratings per user
-   - minimum ratings per movie
-   - keep only top-K most-rated movies
-   - optional random sampling
-3) Re-indexes:
+1) Reads ratings.csv in chunk.
+2) Optionally filter to reduce size
+3) Re-index:
    - userId -> user_idx (contiguous, int32)  [NOT saved]
    - movieId -> item_idx (contiguous, int32) [SAVED, because we  need to map embeddings back to movies]
-4) Builds a per-user holdout split (last rating by timestamp by default):
+4) Build a per-user holdout split (last rating by timestamp by default):
    - train.csv
    - val.csv
    - items.csv (mapping item_idx -> movieId, title, genres)
-5) Saves a small movie mapping file:
-   - items.parquet: item_idx, movieId (and optionally title/genres from movies.csv)
 
 Outputs (default)
 -----------------
 processed/
-  train.parquet: columns [user_idx, item_idx, rating]
-  val.parquet:   columns [user_idx, item_idx, rating]
-  items.parquet: columns [item_idx, movieId, title?, genres?]
+  train.csv: columns [user_idx, item_idx, rating]
+  val.csv:   columns [user_idx, item_idx, rating]
+  items.csv: columns [item_idx, movieId, title, genres]
 """
-
-from __future__ import annotations
-
 import argparse
 import os
 from typing import Optional, Tuple
@@ -118,7 +112,7 @@ def build_contiguous_indices(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFra
     movie_to_idx = {int(mid): int(i) for i, mid in enumerate(unique_movies)}
     items_df = pd.DataFrame({"item_idx": np.arange(len(unique_movies), dtype=np.int32), "movieId": unique_movies})
 
-    # user mapping (ephemeral; we do NOT persist original user IDs by design)
+    # user mapping
     unique_users = np.sort(df["userId"].unique())
     user_to_idx = {int(uid): int(i) for i, uid in enumerate(unique_users)}
 
@@ -194,7 +188,7 @@ def main():
     train_raw, val_raw = per_user_last_timestamp_split(filtered)
     print(f"Train rows: {len(train_raw):,} | Val rows: {len(val_raw):,}")
 
-    # IMPORTANT: Build indices from train+val together so item_idx is consistent across both files
+    # Build indices from train+val together so item_idx is consistent across both files
     combined = pd.concat([train_raw, val_raw], ignore_index=True)
     mapped_all, items_df = build_contiguous_indices(combined)
 
@@ -210,14 +204,14 @@ def main():
     items_path = save_csv(items_df, os.path.join(args.outdir, "mf_items"))
 
     print("\nWrote:")
-    print(f"  {train_path}  (columns: {list(train_mapped.columns)})")
-    print(f"  {val_path}    (columns: {list(val_mapped.columns)})")
-    print(f"  {items_path}  (columns: {list(items_df.columns)})")
+    print(f"{train_path}(columns: {list(train_mapped.columns)})")
+    print(f"{val_path}  (columns: {list(val_mapped.columns)})")
+    print(f"{items_path} columns: {list(items_df.columns)})")
 
     print("\nNext step (training):")
-    print("  - Load train/val files with columns [user_idx, item_idx, rating]")
-    print("  - num_users = train['user_idx'].nunique(), num_items = items['item_idx'].nunique()")
-    print("  - Train MF embeddings on those indices")
+    print("Load train/val files with columns [user_idx, item_idx, rating]")
+    print("num_users = train['user_idx'].nunique(), num_items = items['item_idx'].nunique()")
+    print("Train MF embeddings on those indices")
 
 
 if __name__ == "__main__":
