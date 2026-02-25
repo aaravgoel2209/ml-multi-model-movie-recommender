@@ -1,12 +1,10 @@
 from pathlib import Path
 from typing import Optional, Union
-
 import numpy as np
 import pandas as pd
 import torch
 
 from models.mf.model import MFModel
-from models.mf.trainer import CollaborativeFilterTrainer
 
 
 class CollaborativeFilteringService:
