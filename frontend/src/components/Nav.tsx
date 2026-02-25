@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './Nav.css';
 
-interface DroppedMovie {
-    id: string;
-    title: string;
-}
+import { useMovies } from '../context/MovieContext';
 
 export const Nav: React.FC = () => {
     const [isOpen, setIsOpen] = useState(true);
-    const [favoriteMovies, setFavoriteMovies] = useState<(DroppedMovie | null)[]>([null, null, null]);
-    const [dislikedMovies, setDislikedMovies] = useState<(DroppedMovie | null)[]>([null, null, null]);
+    const { favoriteMovies, dislikedMovies, addToFavorites, addToDisliked, removeMovie, resetLists } = useMovies();
+
     const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
     const [dragOverSection, setDragOverSection] = useState<'favorite' | 'disliked' | null>(null);
 
@@ -34,66 +31,40 @@ export const Nav: React.FC = () => {
         setDragOverSection(null);
     };
 
-    const handleDropFavorite = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    const handleDropFavorite = (e: React.DragEvent<HTMLDivElement>, _index: number) => {
         e.preventDefault();
-        setDragOverIndex(null);
-        setDragOverSection(null);
-        
-        // Get the movie data from the drag event
+        handleDragLeave();
+
         const movieTitle = e.dataTransfer.getData('movieTitle');
         const movieId = e.dataTransfer.getData('movieId');
-        
+
         if (movieTitle && movieId) {
-            const updatedMovies = [...favoriteMovies];
-            updatedMovies[index] = { id: movieId, title: movieTitle };
-            setFavoriteMovies(updatedMovies);
+            addToFavorites({ id: movieId, title: movieTitle });
         }
     };
 
-    const handleDropDisliked = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    const handleDropDisliked = (e: React.DragEvent<HTMLDivElement>, _index: number) => {
         e.preventDefault();
-        setDragOverIndex(null);
-        setDragOverSection(null);
-        
-        // Get the movie data from the drag event
+        handleDragLeave();
+
         const movieTitle = e.dataTransfer.getData('movieTitle');
         const movieId = e.dataTransfer.getData('movieId');
-        
+
         if (movieTitle && movieId) {
-            const updatedMovies = [...dislikedMovies];
-            updatedMovies[index] = { id: movieId, title: movieTitle };
-            setDislikedMovies(updatedMovies);
+            addToDisliked({ id: movieId, title: movieTitle });
         }
     };
 
-    const removeMovie = (index: number, section: 'favorite' | 'disliked') => {
-        if (section === 'favorite') {
-            const updatedMovies = [...favoriteMovies];
-            updatedMovies[index] = null;
-            setFavoriteMovies(updatedMovies);
-        } else {
-            const updatedMovies = [...dislikedMovies];
-            updatedMovies[index] = null;
-            setDislikedMovies(updatedMovies);
-        }
-    };
-
-    const handleRestart = () => {
-        setFavoriteMovies([null, null, null]);
-        setDislikedMovies([null, null, null]);
-    };
 
     return (
         <>
-            <nav 
-                className={`navbar ${isOpen ? 'open' : 'closed'}`}
-            >
+            <nav className={`navbar ${isOpen ? 'open' : 'closed'}`}>
                 <div className="navbar-header">
                     <h2 className="navbar-title">MMMR</h2>
                     {isOpen && (
                         <button
                             className="restart-btn"
-                            onClick={handleRestart}
+                            onClick={resetLists} 
                             aria-label="Restart and clear all movies"
                             title="Clear all movies"
                         >
@@ -101,7 +72,7 @@ export const Nav: React.FC = () => {
                         </button>
                     )}
                 </div>
-                
+
                 {isOpen && (
                     <div className="nav-content">
                         <h3 className="nav-subtitle">Insert 3 favorite movies</h3>
@@ -161,7 +132,7 @@ export const Nav: React.FC = () => {
                         </div>
                     </div>
                 )}
-                
+
                 <button
                     className="toggle-btn"
                     onClick={toggleNav}
